@@ -29,7 +29,7 @@ io.on("connection", (socket) => {
 
 var mysql      = require('mysql');
 var connection = mysql.createConnection({
-  host     : 'localhost',
+  host     : ' https://6411-171-7-55-92.ngrok-free.app',
   user     : 'root',
   password : '',
   database : 'employeetimestamp'
