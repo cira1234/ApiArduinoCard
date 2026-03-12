@@ -29,7 +29,8 @@ io.on("connection", (socket) => {
 
 var mysql      = require('mysql');
 var connection = mysql.createConnection({
-  host     : '6411-171-7-55-92.ngrok-free.app',
+  host     : 'turntable.proxy.rlwy.net',
+  port     : 21360,
   user     : 'root',
   password : '',
   database : 'employeetimestamp'
