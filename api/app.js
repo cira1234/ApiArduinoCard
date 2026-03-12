@@ -32,8 +32,8 @@ var connection = mysql.createConnection({
   host     : 'turntable.proxy.rlwy.net',
   port     : 21360,
   user     : 'root',
-  password : '',
-  database : 'employeetimestamp'
+  password : 'jXoDqXbpaILQUPsTXalHRYOiTtLJLhZD',
+  database : 'railway'
 });
  
 connection.connect();
