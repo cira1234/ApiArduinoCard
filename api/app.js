@@ -89,6 +89,24 @@ app.post("/sendcheckout", (req,res)=>{
  )
 })
 
+app.post("/updatestatuscheckin", (req,res)=>{
+
+ const {time,date,id_card} = req.body
+
+ connection.query(
+   "update checkin set status=2 where  date=? and id_card=?",
+   [date,id_card],
+   (err,result)=>{
+
+     if(err) throw err
+
+     io.emit("attendanceUpdate", [{time,date,id_card}])
+
+     res.json({status:"ok"})
+   }
+ )
+})
+
 
 
 app.post("/findcheckin", (req, res) => {
