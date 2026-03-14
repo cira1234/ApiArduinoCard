@@ -17,14 +17,14 @@ const io = new Server(server, {
 })
 
 
-io.on("connection", async (socket)=>{
-
-const [rows] = await db.query(`
+db.query(`
 SELECT *
 FROM checkin
 ORDER BY id DESC
 LIMIT 10
-`)
+`, (err,rows)=>{
+
+if(err) return console.log(err)
 
 socket.emit("attendanceUpdate", rows)
 
