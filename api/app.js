@@ -51,6 +51,18 @@ app.get('/selectcheckin', (req, res) => {
 })
 
 
+app.get('/selectcheckout', (req, res) => {
+
+
+  connection.query('SELECT * FROM checkout', function (error, results, fields) {
+  if (error) throw error;
+    res.json(results);
+});
+
+
+})
+
+
 
 app.post("/checkin", (req,res)=>{
 
