@@ -73,8 +73,6 @@ app.post("/checkin", (req,res)=>{
 
 app.post("/checkout", (req,res)=>{
 
- console.log(req.body)
-
  const {time_checkout,date_checkout,id_card} = req.body
 
  connection.query(
@@ -82,10 +80,9 @@ app.post("/checkout", (req,res)=>{
    [time_checkout,date_checkout,id_card],
    (err,result)=>{
 
-     if(err){
-       console.log(err)
-       return res.json({status:"error"})
-     }
+     if(err) throw err
+
+     io.emit("attendanceUpdate", [{time_checkout,date_checkout,id_card}])
 
      res.json({status:"ok"})
    }
