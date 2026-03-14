@@ -51,6 +51,20 @@ app.get('/selectcheckin', (req, res) => {
 })
 
 
+app.get('/selectemployee', (req, res) => {
+
+
+  connection.query('SELECT id_card, Name FROM employee', function (error, results, fields) {
+  if (error) throw error;
+    res.json(results);
+});
+
+
+})
+
+
+
+
 app.get('/selectcheckout', (req, res) => {
 
 
