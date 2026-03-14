@@ -32,7 +32,7 @@ var connection = mysql.createConnection({
   host     : 'turntable.proxy.rlwy.net',
   port     : 21360,
   user     : 'root',
-  password : 'jXoDqXbpaILQUPsTXalHRYOiTtLJLhZD',
+  password : 'aZoqtZrSTuzjCZjSTFlpEfXLrcwwoTAl',
   database : 'railway'
 });
  
@@ -69,6 +69,41 @@ app.post("/checkin", (req,res)=>{
    }
  )
 })
+
+
+
+app.post("/findcheckin", (req, res) => {
+
+  const {  date, id_card } = req.body;
+
+  connection.query(
+    "SELECT * FROM checkin WHERE date = ? AND id_card = ?",
+    [date, id_card],
+    (err, result) => {
+
+      if (err) {
+        console.log(err);
+        return res.status(500).json({ status: "error" });
+      }
+
+      if (result.length > 0) {
+
+        // เจอ user
+        io.emit("attendanceUpdate", result);
+
+        res.json({ status: "founduser" });
+
+      } else {
+
+        // ไม่เจอ
+        res.json({ status: "notfound" });
+
+      }
+
+    }
+  );
+
+});
 
 app.listen(port,  () => {
   console.log(`Example app listening on port ${port}`)
