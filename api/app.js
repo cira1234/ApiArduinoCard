@@ -34,7 +34,7 @@ connection.connect();
 connection.query(`
 SELECT *
 FROM checkin
-ORDER BY id DESC
+ORDER BY date DESC
 LIMIT 10
 `, (err,rows)=>{
 
