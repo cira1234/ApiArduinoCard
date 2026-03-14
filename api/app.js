@@ -82,7 +82,7 @@ app.post("/checkout", (req,res)=>{
 
      if(err) throw err
 
-     io.emit("attendanceUpdate", [{time,date,id_card}])
+     io.emit("attendanceUpdate", [{time_checkout,date_checkout,id_card}])
 
      res.json({status:"ok"})
    }
