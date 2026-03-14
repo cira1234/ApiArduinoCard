@@ -37,10 +37,10 @@ io.on("connection",(socket)=>{
   console.log("client connected")
 
   connection.query(`
-  SELECT *
-  FROM checkin
+ SELECT *
+  FROM checkin INNER JOIN employee on checkin.id_card = employee.id_card
   ORDER BY date DESC
-  LIMIT 10
+  LIMIT 10;
   `, (err,rows)=>{
 
     if(err){
