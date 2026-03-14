@@ -308,6 +308,6 @@ app.post("/findcheckin", (req, res) => {
 // });
 
 
-app.listen(port,  () => {
-  console.log(`Example app listening on port ${port}`)
+server.listen(port, () => {
+  console.log(`Server running on port ${port}`)
 })
