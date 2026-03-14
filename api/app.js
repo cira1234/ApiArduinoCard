@@ -195,7 +195,7 @@ app.post("/findcheckin", (req, res) => {
       else {
 
         connection.query(
-          "INSERT INTO checkin(time,date,id_card,status) VALUES(?,?,?,1)",
+          "INSERT INTO checkin(time,date,id_card) VALUES(?,?,?)",
           [time, date, id_card],
           (err) => {
 
