@@ -73,11 +73,11 @@ app.post("/checkin", (req,res)=>{
 
 app.post("/checkout", (req,res)=>{
 
- const {time,date,id_card} = req.body
+ const {time_checkout,date_checkout,id_card} = req.body
 
  connection.query(
    "INSERT INTO checkout(time_checkout,date_checkout,id_card) VALUES(?,?,?)",
-   [time,date,id_card],
+   [time_checkout,date_checkout,id_card],
    (err,result)=>{
 
      if(err) throw err
