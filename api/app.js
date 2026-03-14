@@ -76,7 +76,7 @@ app.post("/checkout", (req,res)=>{
  const {time,date,id_card} = req.body
 
  connection.query(
-   "INSERT INTO checkout(time,date,id_card) VALUES(?,?,?)",
+   "INSERT INTO checkout(time_checkout,date_checkout,id_card) VALUES(?,?,?)",
    [time,date,id_card],
    (err,result)=>{
 
