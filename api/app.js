@@ -17,7 +17,21 @@ const io = new Server(server, {
 })
 
 
-db.query(`
+
+
+var mysql      = require('mysql2');
+var connection = mysql.createConnection({
+  host     : 'junction.proxy.rlwy.net',
+  port     : 19560,
+  user     : 'root',
+  password : 'aZoqtZrSTuzjCZjSTFlpEfXLrcwwoTAl',
+  database : 'railway'
+});
+ 
+connection.connect();
+
+
+connection.query(`
 SELECT *
 FROM checkin
 ORDER BY id DESC
@@ -30,16 +44,6 @@ socket.emit("attendanceUpdate", rows)
 
 })
 
-var mysql      = require('mysql2');
-var connection = mysql.createConnection({
-  host     : 'junction.proxy.rlwy.net',
-  port     : 19560,
-  user     : 'root',
-  password : 'aZoqtZrSTuzjCZjSTFlpEfXLrcwwoTAl',
-  database : 'railway'
-});
- 
-connection.connect();
 
 
 app.get('/selectcheckin', (req, res) => {
