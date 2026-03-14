@@ -17,14 +17,17 @@ const io = new Server(server, {
 })
 
 
-io.on("connection", (socket) => {
-  console.log("Client connected")
+io.on("connection", async (socket)=>{
 
-  // ทดสอบส่งข้อมูล
-  socket.emit("attendanceUpdate", [
-    { time: "08:30", date: "2026-03-10", id_card: "A01" },
-    { time: "09:10", date: "2026-03-10", id_card: "A02" }
-  ])
+const [rows] = await db.query(`
+SELECT *
+FROM checkin
+ORDER BY id DESC
+LIMIT 10
+`)
+
+socket.emit("attendanceUpdate", rows)
+
 })
 
 var mysql      = require('mysql2');
