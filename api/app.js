@@ -71,6 +71,25 @@ app.post("/checkin", (req,res)=>{
 })
 
 
+app.post("/checkout", (req,res)=>{
+
+ const {time,date,id_card} = req.body
+
+ connection.query(
+   "INSERT INTO checkout(time,date,id_card) VALUES(?,?,?)",
+   [time,date,id_card],
+   (err,result)=>{
+
+     if(err) throw err
+
+     io.emit("attendanceUpdate", [{time,date,id_card}])
+
+     res.json({status:"ok"})
+   }
+ )
+})
+
+
 
 app.post("/findcheckin", (req, res) => {
 
