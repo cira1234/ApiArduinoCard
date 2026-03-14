@@ -52,6 +52,20 @@ io.on("connection",(socket)=>{
 
   })
 
+  connection.query(`
+  SELECT *
+  FROM employee
+  `,(err,rows)=>{
+
+    if(err){
+      console.log(err)
+      return
+    }
+
+    socket.emit("employeedata", rows)
+
+  })
+
 })
 
 
