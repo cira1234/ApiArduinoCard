@@ -29,8 +29,8 @@ io.on("connection", (socket) => {
 
 var mysql      = require('mysql2');
 var connection = mysql.createConnection({
-  host     : 'turntable.proxy.rlwy.net',
-  port     : 21360,
+  host     : 'junction.proxy.rlwy.net',
+  port     : 19560,
   user     : 'root',
   password : 'aZoqtZrSTuzjCZjSTFlpEfXLrcwwoTAl',
   database : 'railway'
