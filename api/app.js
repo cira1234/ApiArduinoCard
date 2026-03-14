@@ -10,11 +10,7 @@ const server = http.createServer(app);
 app.use(express.json());
 app.use(cors());
 
-const io = new Server(server, {
-  cors: {
-    origin: "*"
-  }
-})
+
 
 
 
@@ -31,16 +27,30 @@ var connection = mysql.createConnection({
 connection.connect();
 
 
-connection.query(`
-SELECT *
-FROM checkin
-ORDER BY date DESC
-LIMIT 10
-`, (err,rows)=>{
+const io = new Server(server, {
+  cors: {
+    origin: "*"
+  }
+})
+io.on("connection",(socket)=>{
 
-if(err) return console.log(err)
+  console.log("client connected")
 
-socket.emit("attendanceUpdate", rows)
+  connection.query(`
+  SELECT *
+  FROM checkin
+  ORDER BY date DESC
+  LIMIT 10
+  `, (err,rows)=>{
+
+    if(err){
+      console.log(err)
+      return
+    }
+
+    socket.emit("attendanceUpdate", rows)
+
+  })
 
 })
 
