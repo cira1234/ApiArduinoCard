@@ -77,7 +77,7 @@ app.post("/findcheckin", (req, res) => {
   const {  date, id_card } = req.body;
 
   connection.query(
-    "SELECT * FROM checkin WHERE date = ? AND id_card = ?",
+    "SELECT * FROM checkin WHERE date = ? AND id_card = ? and status=1",
     [date, id_card],
     (err, result) => {
 
