@@ -124,6 +124,65 @@ app.post("/findcheckin", (req, res) => {
 
 });
 
+
+
+app.post("/scan", (req, res) => {
+
+  const { time, date, id_card } = req.body;
+
+  connection.query(
+    "SELECT * FROM checkin WHERE date = ? AND id_card = ? AND status = 1",
+    [date, id_card],
+    (err, result) => {
+
+      if (err) {
+        console.log(err);
+        return res.status(500).json({ status: "error" });
+      }
+
+      // ถ้ามี checkin แล้ว → checkout
+      if (result.length > 0) {
+
+        connection.query(
+          "INSERT INTO checkout(time_checkout,date_checkout,id_card) VALUES(?,?,?)",
+          [time, date, id_card],
+          (err2) => {
+
+            if (err2) {
+              console.log(err2);
+              return res.status(500).json({ status: "error" });
+            }
+
+            res.json({ status: "checkout_success" });
+          }
+        );
+
+      } 
+      // ถ้ายังไม่มี → checkin
+      else {
+
+        connection.query(
+          "INSERT INTO checkin(time,date,id_card) VALUES(?,?,?)",
+          [time, date, id_card],
+          (err2) => {
+
+            if (err2) {
+              console.log(err2);
+              return res.status(500).json({ status: "error" });
+            }
+
+            res.json({ status: "checkin_success" });
+          }
+        );
+
+      }
+
+    }
+  );
+
+});
+
+
 app.listen(port,  () => {
   console.log(`Example app listening on port ${port}`)
 })
