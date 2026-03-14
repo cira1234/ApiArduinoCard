@@ -146,32 +146,39 @@ app.post("/findcheckin", (req, res) => {
 
   const { time, date, id_card } = req.body;
 
+  // 🔴 เช็คก่อนว่า checkout ไปแล้วหรือยัง
   connection.query(
-    "SELECT * FROM checkin WHERE date = ? AND id_card = ? AND status = 1",
+    "SELECT * FROM checkin WHERE date=? AND id_card=? AND status=2",
     [date, id_card],
-    (err, result) => {
+    (err, result2) => {
 
       if (err) {
         console.log(err);
         return res.status(500).json({ status: "error" });
       }
 
-      // ✅ เจอ user → checkout
-      if (result.length > 0) {
+      // ❗ ถ้า status = 2 แปลว่า checkout แล้ว
+      if (result2.length > 0) {
+        return res.json({ status: "already_checkout" });
+      }
 
-        connection.query(
-          "INSERT INTO checkout(time_checkout,date_checkout,id_card) VALUES(?,?,?)",
-          [time, date, id_card],
-          (err) => {
+      // 🔍 เช็ค checkin ที่ยังไม่ checkout
+      connection.query(
+        "SELECT * FROM checkin WHERE date=? AND id_card=? AND status=1",
+        [date, id_card],
+        (err, result) => {
 
-            if (err) {
-              console.log(err);
-              return res.status(500).json({ status: "error" });
-            }
+          if (err) {
+            console.log(err);
+            return res.status(500).json({ status: "error" });
+          }
+
+          // ✅ เจอ → ทำ checkout
+          if (result.length > 0) {
 
             connection.query(
-              "UPDATE checkin SET status = 2 WHERE date=? AND id_card=?",
-              [date, id_card],
+              "INSERT INTO checkout(time_checkout,date_checkout,id_card) VALUES(?,?,?)",
+              [time, date, id_card],
               (err) => {
 
                 if (err) {
@@ -179,45 +186,57 @@ app.post("/findcheckin", (req, res) => {
                   return res.status(500).json({ status: "error" });
                 }
 
-                io.emit("attendanceUpdate", result);
+                connection.query(
+                  "UPDATE checkin SET status=2 WHERE date=? AND id_card=?",
+                  [date, id_card],
+                  (err) => {
 
-                res.json({ status: "checkout_success" });
+                    if (err) {
+                      console.log(err);
+                      return res.status(500).json({ status: "error" });
+                    }
+
+                    io.emit("attendanceUpdate", result);
+
+                    res.json({ status: "checkout_success" });
+
+                  }
+                );
 
               }
             );
 
           }
-        );
 
-      }
+          // ❌ ไม่เคย checkin → ทำ checkin ใหม่
+          else {
 
-      // ❌ ไม่เจอ → checkin
-      else {
+            connection.query(
+              "INSERT INTO checkin(time,date,id_card,status) VALUES(?,?,?,1)",
+              [time, date, id_card],
+              (err) => {
 
-        connection.query(
-          "INSERT INTO checkin(time,date,id_card) VALUES(?,?,?)",
-          [time, date, id_card],
-          (err) => {
+                if (err) {
+                  console.log(err);
+                  return res.status(500).json({ status: "error" });
+                }
 
-            if (err) {
-              console.log(err);
-              return res.status(500).json({ status: "error" });
-            }
+                io.emit("attendanceUpdate", [{ time, date, id_card }]);
 
-            io.emit("attendanceUpdate", [{ time, date, id_card }]);
+                res.json({ status: "checkin_success" });
 
-            res.json({ status: "checkin_success" });
+              }
+            );
 
           }
-        );
 
-      }
+        }
+      );
 
     }
   );
 
 });
-
 
 
 // app.post("/scan", (req, res) => {
