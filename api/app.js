@@ -109,12 +109,45 @@ app.post("/updatestatuscheckin", (req,res)=>{
 
 
 
+// app.post("/findcheckin", (req, res) => {
+
+//   const {  date, id_card } = req.body;
+
+//   connection.query(
+//     "SELECT * FROM checkin WHERE date = ? AND id_card = ? and status=1",
+//     [date, id_card],
+//     (err, result) => {
+
+//       if (err) {
+//         console.log(err);
+//         return res.status(500).json({ status: "error" });
+//       }
+
+//       if (result.length > 0) {
+
+//         // เจอ user
+//         io.emit("attendanceUpdate", result);
+
+//         res.json({ status: "founduser" });
+
+//       } else {
+
+//         // ไม่เจอ
+//         res.json({ status: "notfound" });
+
+//       }
+
+//     }
+//   );
+
+// });
+
 app.post("/findcheckin", (req, res) => {
 
-  const {  date, id_card } = req.body;
+  const { time, date, id_card } = req.body;
 
   connection.query(
-    "SELECT * FROM checkin WHERE date = ? AND id_card = ? and status=1",
+    "SELECT * FROM checkin WHERE date = ? AND id_card = ? AND status = 1",
     [date, id_card],
     (err, result) => {
 
@@ -123,17 +156,60 @@ app.post("/findcheckin", (req, res) => {
         return res.status(500).json({ status: "error" });
       }
 
+      // ✅ เจอ user → checkout
       if (result.length > 0) {
 
-        // เจอ user
-        io.emit("attendanceUpdate", result);
+        connection.query(
+          "INSERT INTO checkout(time_checkout,date_checkout,id_card) VALUES(?,?,?)",
+          [time, date, id_card],
+          (err) => {
 
-        res.json({ status: "founduser" });
+            if (err) {
+              console.log(err);
+              return res.status(500).json({ status: "error" });
+            }
 
-      } else {
+            connection.query(
+              "UPDATE checkin SET status = 2 WHERE date=? AND id_card=?",
+              [date, id_card],
+              (err) => {
 
-        // ไม่เจอ
-        res.json({ status: "notfound" });
+                if (err) {
+                  console.log(err);
+                  return res.status(500).json({ status: "error" });
+                }
+
+                io.emit("attendanceUpdate", result);
+
+                res.json({ status: "checkout_success" });
+
+              }
+            );
+
+          }
+        );
+
+      }
+
+      // ❌ ไม่เจอ → checkin
+      else {
+
+        connection.query(
+          "INSERT INTO checkin(time,date,id_card,status) VALUES(?,?,?,1)",
+          [time, date, id_card],
+          (err) => {
+
+            if (err) {
+              console.log(err);
+              return res.status(500).json({ status: "error" });
+            }
+
+            io.emit("attendanceUpdate", [{ time, date, id_card }]);
+
+            res.json({ status: "checkin_success" });
+
+          }
+        );
 
       }
 
