@@ -38,7 +38,7 @@ io.on("connection",(socket)=>{
 
   connection.query(`
  SELECT *
-  FROM checkin INNER JOIN employee on checkin.id_card = employee.id_card
+  FROM checkin inner join checkout on checkin.id_card = checkout.id_card 
   ORDER BY date DESC
   LIMIT 10;
   `, (err,rows)=>{
