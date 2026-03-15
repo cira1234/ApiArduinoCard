@@ -17,10 +17,10 @@ app.use(cors());
 
 var mysql      = require('mysql2');
 var connection = mysql.createConnection({
-  host     : 'junction.proxy.rlwy.net',
-  port     : 19560,
+  host     : 'trolley.proxy.rlwy.net',
+  port     : 41586,
   user     : 'root',
-  password : 'aZoqtZrSTuzjCZjSTFlpEfXLrcwwoTAl',
+  password : 'nfsNeTDBwdOpchwdqAixAHnXStFmjSPR',
   database : 'railway'
 });
  
